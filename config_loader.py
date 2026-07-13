@@ -40,10 +40,17 @@ def _build_default_config():
         },
         "colors": {
             "green":  {"hsv_lower": [38, 92, 91], "hsv_upper": [87, 255, 255]},
-            "yellow": {"hsv_lower": [22, 80, 100], "hsv_upper": [38, 255, 255]},
             "orange": {"hsv_lower": [0, 107, 122], "hsv_upper": [19, 255, 255]}
         },
-        "box_priority": {"color_order": ["green", "yellow"]},
+        "box_priority": {"color_order": ["green", "orange"]},
+        "yolo": {
+            "model_path": "best.pt",
+            "backend": "ultralytics",
+            "conf_threshold": 0.3,
+            "box_class_map": {"green": "green_square", "orange": "orange_square"},
+            "artag_class": "artag",
+            "tag_approach_scale": 0.5
+        },
         "box_detection": {
             "thresholds": {
                 "x_left_large": 275, "x_left_small": 295,

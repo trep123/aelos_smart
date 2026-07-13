@@ -9,6 +9,7 @@ RobotState 数据类统一管理所有运行时状态，消除全局变量。
 """
 
 import time
+import cv2
 import rospy
 from config_loader import cfg, load_config
 from actions import dispatch_action, run_action_sequence
@@ -16,6 +17,7 @@ from sensors import RobotSensors
 from box_detector import find_box, goto_box
 from tag_navigator import turn_to_tag, find_waypoint, get_thresholds_from_waypoint
 from search import box_search, tag_search
+from yolo_detector import detect_artag
 
 
 class RobotState:
@@ -149,7 +151,26 @@ if __name__ == '__main__':
                         state.last_unknown_tag = state.marker[0]
 
             if need_fallback:
-                tag_search(state)
+                # 先尝试 YOLO 远距离检测 artag（解决 CV 距离不够的问题）
+                yolo_tag = detect_artag(cv2.cvtColor(state.chest_img, cv2.COLOR_RGB2BGR))
+                if yolo_tag and yolo_tag['conf'] > 0.3:
+                    # YOLO 看到了 tag，朝它靠近
+                    print(f"[YOLO] artag found conf={yolo_tag['conf']:.2f} x={yolo_tag['x']:.0f}, approaching")
+                    img_w = state.chest_img.shape[1]
+                    cx = yolo_tag['x']
+                    # 简单比例控制：tag 在左边就左转，在右边就右转
+                    if cx < img_w * 0.35:
+                        act = 'BoxL_turn2' if state.step == 1 else 'L_turn2'
+                        dispatch_action(act, 1)
+                    elif cx > img_w * 0.65:
+                        act = 'BoxR_turn2' if state.step == 1 else 'R_turn2'
+                        dispatch_action(act, 1)
+                    else:
+                        # 居中，前进靠近
+                        act = 'box_go2' if state.step == 1 else 'go_fast2'
+                        dispatch_action(act, 1)
+                else:
+                    tag_search(state)
 
             else:
                 state.no_tag_count = 0
