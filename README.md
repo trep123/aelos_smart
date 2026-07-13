@@ -34,13 +34,13 @@ demo14/
 # opencv-python-headless 避免与 ROS 的 GUI 库冲突
 pip install ultralytics==8.3.0 \
             opencv-python-headless==4.10.0.84 \
-            numpy==2.0.2
+            numpy==1.26.4
 ```
 
 > **版本兼容说明：**
 > - Python 3.9 兼容 ultralytics 最新稳定版
 > - `opencv-python-headless`：使用 headless 版避免与 ROS 的 cv2 GUI 库冲突
-> - `numpy==2.0.2`：Python 3.9 兼容，ROS 环境需确认不覆盖系统 numpy（若冲突降为 1.26.4）
+> - `numpy==1.26.4`：Python 3.9 兼容，ROS 环境需确认不覆盖系统 numpy
 
 ### 模型准备
 
