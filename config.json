@@ -48,7 +48,7 @@
   // [yolo] YOLO 模型配置 —— 替代 CV 进行方块识别 + 辅助远距离 ARTag 检测
   // ==================================================================
   "yolo": {
-    "model_path": "best.pt",                  // YOLO 模型文件路径 (.pt 或 .onnx)
+    "model_name": "best",                     // YOLO 模型名称（不含扩展名），文件放在 models/ 目录
     "backend": "ultralytics",                 // 推理后端: "ultralytics" 或 "onnx"
     "conf_threshold": 0.3,                    // 置信度阈值: < 此值的检测被忽略
     "box_class_map": {                        // config 颜色名 → YOLO 类别名映射

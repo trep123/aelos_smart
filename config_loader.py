@@ -44,7 +44,7 @@ def _build_default_config():
         },
         "box_priority": {"color_order": ["green", "orange"]},
         "yolo": {
-            "model_path": "best.pt",
+            "model_name": "best",
             "backend": "ultralytics",
             "conf_threshold": 0.3,
             "box_class_map": {"green": "green_square", "orange": "orange_square"},

@@ -23,7 +23,11 @@ def _load_model():
     if _model is not None:
         return
 
-    model_path = cfg('yolo', 'model_path', default='best.pt')
+    model_name = cfg('yolo', 'model_name', default='best')
+    # 模型文件路径: models/<model_name>.pt（基于项目根目录）
+    import os as _os
+    root_dir = _os.path.dirname(_os.path.abspath(__file__))
+    model_path = _os.path.join(root_dir, 'models', f'{model_name}.pt')
     backend = cfg('yolo', 'backend', default='ultralytics')
 
     if backend == 'ultralytics':
