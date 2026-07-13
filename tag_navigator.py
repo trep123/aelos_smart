@@ -65,17 +65,17 @@ def turn_to_tag(dis_x, dis_y, theta, state,
         elif theta_err < -hard_limit:
             print("1右转身（大角度）θ_err", theta_err, "< -hard_limit", hard_limit)
             BoxR_turn2(1)
-        # L3: 方向对正
+        # L3: 快速逼近 —— 距离远时先靠近再对正角度
+        elif x_err > x_threshold + fast_x:
+            print("向前靠近标签（快速）x_err", x_err, ">", x_threshold + fast_x)
+            box_go2(1)
+        # L4: 方向对正 —— 靠近后再精调角度
         elif theta_err > theta_threshold_left:
             print("2左转（精调）θ_err", theta_err, "> θ_L", theta_threshold_left)
             BoxL_turn1(1)
         elif theta_err < -theta_threshold_right:
             print("2右转（精调）θ_err", theta_err, "< -θ_R", theta_threshold_right)
             BoxR_turn1(1)
-        # L4: 快速逼近
-        elif x_err > x_threshold + fast_x:
-            print("向前靠近标签（快速）x_err", x_err, ">", x_threshold + fast_x)
-            box_go2(1)
         # L5: 粗调平移
         elif y_err > y_threshold + coarse_y:
             print("1左移动（粗调）y_err", y_err, ">", y_threshold + coarse_y)
@@ -102,36 +102,43 @@ def turn_to_tag(dis_x, dis_y, theta, state,
             return True
 
     elif step == 2:
+        # L2: 大角度转向
         if theta_err > hard_limit:
             print("1左转身（大角度）θ_err", theta_err, "> hard_limit", hard_limit)
             L_turn2(1)
         elif theta_err < -hard_limit:
             print("1右转身（大角度）θ_err", theta_err, "< -hard_limit", hard_limit)
             R_turn2(1)
+        # L3: 快速逼近 —— 距离远时先靠近再对正角度
+        elif x_err > x_threshold + fast_x:
+            print("向前靠近标签（快速）x_err", x_err, ">", x_threshold + fast_x)
+            go_fast2(1)
+        # L4: 方向对正 —— 靠近后再精调角度
         elif theta_err > theta_threshold_left:
             print("2左转（精调）θ_err", theta_err, "> θ_L", theta_threshold_left)
             L_turn1(1)
         elif theta_err < -theta_threshold_right:
             print("2右转（精调）θ_err", theta_err, "< -θ_R", theta_threshold_right)
             R_turn1(1)
-        elif x_err > x_threshold + fast_x:
-            print("向前靠近标签（快速）x_err", x_err, ">", x_threshold + fast_x)
-            go_fast2(1)
+        # L5: 粗调平移
         elif y_err > y_threshold + coarse_y:
             print("1左移动（粗调）y_err", y_err, ">", y_threshold + coarse_y)
             L_move2(1)
         elif y_err < -y_threshold - coarse_y:
             print("1右移动（粗调）y_err", y_err, "< -", y_threshold + coarse_y)
             R_move2(1)
+        # L6: 精调平移
         elif y_err > y_threshold:
             print("1左移动（精调）y_err", y_err, ">", y_threshold)
             L_move1(1)
         elif y_err < -y_threshold:
             print("1右移动（精调）y_err", y_err, "< -", y_threshold)
             R_move1(1)
+        # L7: 慢速逼近
         elif x_err > x_threshold + slow_x:
             print("向前靠近标签（中速）x_err", x_err, ">", x_threshold + slow_x)
             go_fast1(1)
+        # L8: 精调逼近
         elif x_err > x_threshold + fine_x:
             print("向前靠近标签（精调）x_err", x_err, ">", x_threshold + fine_x)
             go_fast(1)

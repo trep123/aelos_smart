@@ -27,9 +27,15 @@ def _init_color_range():
         return
     _debug = cfg('system', 'debug', default=False)
     _color_range = {}
+    _fallbacks = {
+        'green':  ([38, 92, 91], [87, 255, 255]),
+        'yellow': ([22, 80, 100], [38, 255, 255]),
+        'orange': ([0, 107, 122], [19, 255, 255]),
+    }
     for cname in ['green', 'yellow', 'orange']:
-        lower = cfg('colors', cname, 'hsv_lower')
-        upper = cfg('colors', cname, 'hsv_upper')
+        fb_low, fb_high = _fallbacks.get(cname, ([0, 0, 0], [180, 255, 255]))
+        lower = cfg('colors', cname, 'hsv_lower', default=fb_low)
+        upper = cfg('colors', cname, 'hsv_upper', default=fb_high)
         if lower and upper:
             _color_range[cname] = (tuple(lower), tuple(upper))
 

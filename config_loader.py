@@ -79,7 +79,7 @@ def _build_default_config():
             }
         },
         "tag_alignment": {
-            "defaults": {"x_threshold": 0.03, "y_threshold": 0.02, "theta_threshold": 10},
+            "defaults": {"x_threshold": 0.03, "y_threshold": 0.02, "theta_threshold": 5},
             "offsets": {
                 "back_threshold": 0.03, "theta_hard_limit": 35,
                 "coarse_y_offset": 0.05, "fast_approach_offset": 0.2,
@@ -162,8 +162,11 @@ def load_config(config_path=None):
         lines = [re.sub(r'//.*$', '', line) for line in raw_text.split('\n')]
         _CONFIG = json.loads('\n'.join(lines))
         print(f"已加载配置文件: {config_path}")
-    except (FileNotFoundError, json.JSONDecodeError) as e:
-        print(f"警告: 无法加载配置文件 ({e})，使用内置默认配置")
+    except FileNotFoundError:
+        print(f"警告: 配置文件不存在 ({config_path})，使用内置默认配置")
+        _CONFIG = _build_default_config()
+    except json.JSONDecodeError as e:
+        print(f"警告: 配置文件格式错误 ({e})，使用内置默认配置")
         _CONFIG = _build_default_config()
     return _CONFIG
 
