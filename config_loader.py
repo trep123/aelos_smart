@@ -87,7 +87,7 @@ def _build_default_config():
             }
         },
         "tag_alignment": {
-            "defaults": {"x_threshold": 0.03, "y_threshold": 0.02, "theta_threshold": 5},
+            "defaults": {"x_threshold": 0.03, "y_threshold": 0.02, "theta_threshold": 10},
             "offsets": {
                 "back_threshold": 0.03, "theta_hard_limit": 35,
                 "coarse_y_offset": 0.05, "fast_approach_offset": 0.2,

@@ -101,3 +101,9 @@ def goto_box(state):
             base_action.action(act['grab'])
             base_action.action(act['lift'])
             state.level = "end_box"
+        else:
+            # 在移动区间和抓取区间之间的死区：保守前进一步
+            if cy < t['y_forward'] + grab_tol:
+                base_action.action(act['forward'])
+                state.approach_forward_count += 1
+                time.sleep(action_sleep)

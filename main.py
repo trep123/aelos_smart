@@ -225,6 +225,7 @@ if __name__ == '__main__':
                         elif wp.get('reset_mission', False):
                             state.ID = 0
                             state.level = "start_box"
+                            state.step = 1  # 重置 step，确保下次 box_transition 使用 step1 序列
                         else:
                             state.ID += 1
                 else:

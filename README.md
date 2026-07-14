@@ -175,20 +175,20 @@ YOLO推理封装，支持 ultralytics (PyTorch) 和 ONNX Runtime。提供 `detec
 ## 更新要点
 
 ### 初始状态可指定
-- **配置文件**：`system.initial_mode` 设置默认启动模式
-- **命令行**：`--mode return` 临时覆盖
-- **支持模式**：
-  - `full`：完整流程（默认），ID=0 step=1 level=start_box
-  - `return`：从返程开始，ID=5 step=2 level=reverse_moving，跳过抓箱子直接进入返程导航
-- **用途**：调试返程阶段时无需等待完整任务流程
+- `system.initial_mode` 配置 + `--mode return` 命令行
+- `full`（完整流程）或 `return`（从返程开始，跳过抓箱子）
 
 ### YOLO 集成
-- 方块检测由 HSV 颜色分割改为 YOLO 推理（`green_square` / `orange_square`）
-- ARTag 远距离检测由 YOLO 辅助，进入有效范围后切换 CV 精准对正
+- 方块检测由 HSV 分割改为 YOLO 推理（`green_square` / `orange_square`）
+- ARTag 混合检测：远距离 YOLO 识别 → 靠近后切换 CV 精准对正
 
 ### 模块化重构
-- 从单体 `botec_code.py` 拆分为 7 个独立模块
-- `RobotState` 数据类统一管理状态，消除全局变量
+- 从单体 `botec_code.py` 拆分为 7 个独立模块，`RobotState` 消除全局变量
+
+### 近期修复
+- `reset_mission` 后同步重置 `step=1`，修复第二轮 `box_transition` 使用错误序列的问题
+- `config_loader.py` 默认值与 `config.json` 保持一致
+- `grab_tol > 0` 时 `goto_box` 死区增加保守前进兜底
 
 ## 部署
 
