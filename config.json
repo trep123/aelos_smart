@@ -12,9 +12,10 @@
   // ==================================================================
   "system": {
     "ros_workspace_path": "/home/lemon/catkin_ws/src/aelos_smart_ros", // leju ROS 功能包的绝对路径
-    "debug": false,                   // 调试模式: true=弹出 OpenCV 窗口显示检测结果, false=正常运行
-    "debug_display_window": "Box",    // 调试窗口标题
-    "debug_display_wait_ms": 2000     // cv2.waitKey 等待时间(ms): 0=无限, 2000=2秒后自动关闭
+    "debug": false,                   // 调试模式: true=弹出 OpenCV 窗口显示检测结果
+    "debug_display_window": "Box",
+    "debug_display_wait_ms": 2000,
+    "initial_mode": "full"            // 初始状态: "full"=完整流程, "return"=返程(从标签5 step2开始)
   },
 
   // ==================================================================

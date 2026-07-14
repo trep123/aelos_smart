@@ -24,7 +24,8 @@ def _build_default_config():
             "ros_workspace_path": "/home/lemon/catkin_ws/src/aelos_smart_ros",
             "debug": False,
             "debug_display_window": "Box",
-            "debug_display_wait_ms": 2000
+            "debug_display_wait_ms": 2000,
+            "initial_mode": "full"
         },
         "camera": {
             "topic": "/usb_cam_chest/image_raw",

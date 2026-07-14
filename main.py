@@ -36,11 +36,20 @@ class RobotState:
         '_wp_cache',  # 当前路径点缓存
     )
 
-    def __init__(self, sensors):
-        # --- 状态机 ---
-        self.ID = 0               # 0=抓箱子, >0=标签导航
-        self.step = 1              # 1=去程, 2=返程
-        self.level = "start_box"   # 子状态
+    def __init__(self, sensors, mode="full"):
+        # --- 状态机（支持初始模式切换） ---
+        self.ID = 0
+        self.step = 1
+        self.level = "start_box"
+
+        if mode == "return":
+            self.ID = 5
+            self.step = 2
+            self.level = "reverse_moving"
+        elif mode == "full":
+            pass  # 默认值
+        else:
+            print(f"[警告] 未知初始模式 '{mode}'，使用默认完整流程")
 
         # --- 图像 ---
         self.chest_img = None
@@ -85,12 +94,22 @@ class RobotState:
 # ============================================================================
 
 if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description="机器人搬箱子任务")
+    parser.add_argument("--mode", type=str, default=None,
+                        help="初始模式: full(完整流程) / return(从返程开始)")
+    args = parser.parse_args()
+
     load_config()
     rospy.init_node('image_listener')
 
+    # 初始模式：命令行 > 配置文件 > 默认"full"
+    mode = args.mode or cfg('system', 'initial_mode', default='full')
+    print(f"[初始化] 模式: {mode}")
+
     sensors = RobotSensors()
     sensors.start()
-    state = RobotState(sensors)
+    state = RobotState(sensors, mode=mode)
 
     time.sleep(cfg('timing', 'init_node_delay_sec', default=0.5))
     time.sleep(cfg('timing', 'startup_wait_sec', default=5.0))
@@ -102,8 +121,12 @@ if __name__ == '__main__':
         time.sleep(cfg('timing', 'camera_poll_interval_sec', default=0.1))
 
     print('启动')
-    init_act = cfg('initial_action')
-    dispatch_action(init_act.get('action', 'go_fast2'), init_act.get('repeat', 1))
+    # 仅完整模式执行初始前进动作
+    if mode == "full":
+        init_act = cfg('initial_action')
+        dispatch_action(init_act.get('action', 'go_fast2'), init_act.get('repeat', 1))
+    else:
+        print(f"[跳过] 初始动作（模式={mode}）")
 
     # ========== 主控制循环 ==========
     while not rospy.is_shutdown():
